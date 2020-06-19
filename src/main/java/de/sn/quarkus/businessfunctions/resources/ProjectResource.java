@@ -21,6 +21,8 @@ import javax.ws.rs.QueryParam;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 
+import org.eclipse.microprofile.metrics.MetricUnits;
+import org.eclipse.microprofile.metrics.annotation.Timed;
 import org.eclipse.microprofile.openapi.annotations.Operation;
 import org.eclipse.microprofile.openapi.annotations.enums.ParameterIn;
 import org.eclipse.microprofile.openapi.annotations.enums.SchemaType;
@@ -60,7 +62,10 @@ public class ProjectResource {
     @APIResponse(responseCode = "200", description = "List of projects", 
     		content = @Content(mediaType = "application/json",
             		schema = @Schema(type = SchemaType.ARRAY, implementation = Project.class)))
-    public Response getPagableList( 
+	@Timed(name = "ListTimer", 
+		description = "measures response time, request count and throughput", 
+		unit = MetricUnits.MILLISECONDS)
+	public Response getPagableList( 
     		@QueryParam("pageNum") @DefaultValue("0") @Min(0) int pageNum, 
     		@QueryParam("pageSize") @DefaultValue("10") @Min(0) int pageSize) {
     	
